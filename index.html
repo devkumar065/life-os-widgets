@@ -164,6 +164,186 @@
     @media (max-width: 480px) {
       .cards { grid-template-columns: 1fr 1fr; }
     }
+
+    /* ── Settings button ── */
+    .settings-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      width: 52px;
+      height: 52px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s, border-color 0.3s, transform 0.3s;
+      color: #fff;
+    }
+    .settings-btn:hover {
+      background: rgba(0,245,255,0.15);
+      border-color: rgba(0,245,255,0.5);
+      transform: rotate(60deg);
+    }
+
+    /* ── Modal overlay ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── Modal card ── */
+    .modal {
+      background: #1a1a2e;
+      border: 1px solid rgba(0,245,255,0.25);
+      border-radius: 20px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      transform: translateY(30px);
+      transition: transform 0.3s;
+      box-shadow: 0 0 40px rgba(0,245,255,0.12), 0 0 80px rgba(168,85,247,0.08);
+    }
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+    .modal h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      background: linear-gradient(90deg, #00f5ff, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: rgba(255,100,100,0.2); color: #fff; }
+
+    /* ── Form fields ── */
+    .field-group {
+      margin-bottom: 16px;
+    }
+    .field-group label {
+      display: block;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .field-group input {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #e6edf3;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field-group input:focus { border-color: rgba(0,245,255,0.5); }
+    .field-section-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: rgba(168,85,247,0.8);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin: 20px 0 10px;
+    }
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* ── Modal action buttons ── */
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .btn-save {
+      flex: 1;
+      background: linear-gradient(135deg, rgba(0,245,255,0.2), rgba(168,85,247,0.2));
+      border: 1px solid rgba(0,245,255,0.4);
+      border-radius: 10px;
+      color: #e6edf3;
+      padding: 11px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-save:hover { background: linear-gradient(135deg, rgba(0,245,255,0.3), rgba(168,85,247,0.3)); }
+    .btn-reset {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: rgba(255,255,255,0.6);
+      padding: 11px 18px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-reset:hover { background: rgba(255,100,100,0.1); border-color: rgba(255,100,100,0.3); color: #fff; }
+
+    /* ── Toast notification ── */
+    .toast {
+      position: fixed;
+      bottom: 88px;
+      right: 24px;
+      z-index: 300;
+      background: rgba(0,245,255,0.15);
+      border: 1px solid rgba(0,245,255,0.4);
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.88rem;
+      color: #e6edf3;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -214,6 +394,80 @@
 
   <!-- Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Settings button -->
+  <button class="settings-btn" id="settings-btn" title="Settings">⚙️</button>
+
+  <!-- Settings modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
+      <button class="modal-close" id="modal-close" title="Close">✕</button>
+      <h2>⚙️ Widget Settings</h2>
+
+      <div class="field-group">
+        <label for="cfg-title">Title Text</label>
+        <input id="cfg-title" type="text" placeholder="AI-Powered Life OS" />
+      </div>
+      <div class="field-group">
+        <label for="cfg-subtitle">Subtitle Text</label>
+        <input id="cfg-subtitle" type="text" placeholder="Track · Optimize · Evolve…" />
+      </div>
+
+      <div class="field-section-title">Stat Cards</div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="cfg-goals-label">Card 1 Label</label>
+          <input id="cfg-goals-label" type="text" placeholder="Active Goals" />
+        </div>
+        <div class="field-group">
+          <label for="cfg-goals-value">Card 1 Value</label>
+          <input id="cfg-goals-value" type="number" min="0" placeholder="12" />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="cfg-streak-label">Card 2 Label</label>
+          <input id="cfg-streak-label" type="text" placeholder="Day Streak" />
+        </div>
+        <div class="field-group">
+          <label for="cfg-streak-value">Card 2 Value</label>
+          <input id="cfg-streak-value" type="number" min="0" placeholder="45" />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="cfg-score-label">Card 3 Label</label>
+          <input id="cfg-score-label" type="text" placeholder="Life Score" />
+        </div>
+        <div class="field-group">
+          <label for="cfg-score-value">Card 3 Value</label>
+          <input id="cfg-score-value" type="number" min="0" placeholder="87" />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="cfg-ai-label">Card 4 Label</label>
+          <input id="cfg-ai-label" type="text" placeholder="AI Prompts" />
+        </div>
+        <div class="field-group">
+          <label for="cfg-ai-value">Card 4 Value</label>
+          <input id="cfg-ai-value" type="number" min="0" placeholder="50" />
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-save" id="btn-save">💾 Save</button>
+        <button class="btn-reset" id="btn-reset-defaults">🔄 Reset to Default</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
   <script>
     /* ───────────── Three.js Scene ───────────── */
     (function () {
@@ -294,8 +548,7 @@
     })();
 
     /* ───────────── Animated Counters ───────────── */
-    document.querySelectorAll('.card-value[data-target]').forEach(el => {
-      const target = parseInt(el.dataset.target, 10);
+    function animateCounter(el, target) {
       const duration = 1400;
       const start = performance.now();
       function step(now) {
@@ -306,10 +559,114 @@
         if (elapsed < duration) requestAnimationFrame(step);
         else el.textContent = target;
       }
-      // Slight stagger per card
-      const delay = Array.from(document.querySelectorAll('.card-value[data-target]')).indexOf(el) * 150;
-      setTimeout(() => requestAnimationFrame(step), delay);
+      requestAnimationFrame(step);
+    }
+
+    /* ───────────── Settings / localStorage ───────────── */
+    const DEFAULTS = {
+      title:        'AI-Powered Life OS',
+      subtitle:     'Track · Optimize · Evolve — Your intelligent life dashboard',
+      goalsLabel:   'Active Goals',
+      goalsValue:   12,
+      streakLabel:  'Day Streak',
+      streakValue:  45,
+      scoreLabel:   'Life Score',
+      scoreValue:   87,
+      aiLabel:      'AI Prompts',
+      aiValue:      50,
+    };
+
+    function loadSettings() {
+      const s = {};
+      for (const [k, def] of Object.entries(DEFAULTS)) {
+        const stored = localStorage.getItem('lifeos_' + k);
+        s[k] = stored !== null ? (typeof def === 'number' ? Number(stored) : stored) : def;
+      }
+      return s;
+    }
+
+    function applySettings(s) {
+      document.querySelector('.title').textContent   = '🧠 ' + s.title;
+      document.querySelector('.subtitle').textContent = s.subtitle;
+
+      const cards = [
+        { labelEl: document.querySelectorAll('.card-label')[0], valueEl: document.getElementById('stat-goals'),  label: s.goalsLabel,  value: s.goalsValue },
+        { labelEl: document.querySelectorAll('.card-label')[1], valueEl: document.getElementById('stat-streak'), label: s.streakLabel, value: s.streakValue },
+        { labelEl: document.querySelectorAll('.card-label')[2], valueEl: document.getElementById('stat-score'),  label: s.scoreLabel,  value: s.scoreValue },
+        { labelEl: document.querySelectorAll('.card-label')[3], valueEl: document.getElementById('stat-ai'),     label: s.aiLabel,     value: s.aiValue },
+      ];
+      cards.forEach(({ labelEl, valueEl, label, value }, i) => {
+        labelEl.textContent = label;
+        valueEl.dataset.target = value;
+        setTimeout(() => animateCounter(valueEl, value), i * 150);
+      });
+    }
+
+    function populateForm(s) {
+      document.getElementById('cfg-title').value        = s.title;
+      document.getElementById('cfg-subtitle').value     = s.subtitle;
+      document.getElementById('cfg-goals-label').value  = s.goalsLabel;
+      document.getElementById('cfg-goals-value').value  = s.goalsValue;
+      document.getElementById('cfg-streak-label').value = s.streakLabel;
+      document.getElementById('cfg-streak-value').value = s.streakValue;
+      document.getElementById('cfg-score-label').value  = s.scoreLabel;
+      document.getElementById('cfg-score-value').value  = s.scoreValue;
+      document.getElementById('cfg-ai-label').value     = s.aiLabel;
+      document.getElementById('cfg-ai-value').value     = s.aiValue;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    /* ── Modal open/close ── */
+    const overlay = document.getElementById('modal-overlay');
+    document.getElementById('settings-btn').addEventListener('click', () => {
+      populateForm(loadSettings());
+      overlay.classList.add('open');
     });
+    function closeModal() { overlay.classList.remove('open'); }
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    /* ── Save ── */
+    document.getElementById('btn-save').addEventListener('click', () => {
+      function parseNum(val, def) {
+        const n = parseInt(val, 10);
+        return isNaN(n) ? def : Math.max(0, n);
+      }
+      const s = {
+        title:       document.getElementById('cfg-title').value.trim()        || DEFAULTS.title,
+        subtitle:    document.getElementById('cfg-subtitle').value.trim()     || DEFAULTS.subtitle,
+        goalsLabel:  document.getElementById('cfg-goals-label').value.trim()  || DEFAULTS.goalsLabel,
+        goalsValue:  parseNum(document.getElementById('cfg-goals-value').value,  DEFAULTS.goalsValue),
+        streakLabel: document.getElementById('cfg-streak-label').value.trim() || DEFAULTS.streakLabel,
+        streakValue: parseNum(document.getElementById('cfg-streak-value').value, DEFAULTS.streakValue),
+        scoreLabel:  document.getElementById('cfg-score-label').value.trim()  || DEFAULTS.scoreLabel,
+        scoreValue:  parseNum(document.getElementById('cfg-score-value').value,  DEFAULTS.scoreValue),
+        aiLabel:     document.getElementById('cfg-ai-label').value.trim()     || DEFAULTS.aiLabel,
+        aiValue:     parseNum(document.getElementById('cfg-ai-value').value,     DEFAULTS.aiValue),
+      };
+      for (const [k, v] of Object.entries(s)) localStorage.setItem('lifeos_' + k, v);
+      applySettings(s);
+      closeModal();
+      showToast('✅ Saved!');
+    });
+
+    /* ── Reset to defaults ── */
+    document.getElementById('btn-reset-defaults').addEventListener('click', () => {
+      for (const k of Object.keys(DEFAULTS)) localStorage.removeItem('lifeos_' + k);
+      applySettings(DEFAULTS);
+      closeModal();
+      showToast('🔄 Reset to defaults');
+    });
+
+    /* ── Init on page load ── */
+    applySettings(loadSettings());
   </script>
 </body>
 </html>

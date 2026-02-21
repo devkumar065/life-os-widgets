@@ -264,6 +264,188 @@
     @media (max-width: 480px) {
       .grid { grid-template-columns: 1fr; }
     }
+
+    /* ── Settings button ── */
+    .settings-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      width: 52px;
+      height: 52px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s, border-color 0.3s, transform 0.3s;
+      color: #fff;
+    }
+    .settings-btn:hover {
+      background: rgba(0,245,255,0.15);
+      border-color: rgba(0,245,255,0.5);
+      transform: rotate(60deg);
+    }
+
+    /* ── Modal overlay ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── Modal card ── */
+    .modal {
+      background: #1a1a2e;
+      border: 1px solid rgba(0,245,255,0.25);
+      border-radius: 20px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      transform: translateY(30px);
+      transition: transform 0.3s;
+      box-shadow: 0 0 40px rgba(0,245,255,0.12), 0 0 80px rgba(168,85,247,0.08);
+    }
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+    .modal h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      background: linear-gradient(90deg, #00f5ff, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: rgba(255,100,100,0.2); color: #fff; }
+
+    /* ── Form fields ── */
+    .field-group {
+      margin-bottom: 16px;
+    }
+    .field-group label {
+      display: block;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .field-group input {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #e6edf3;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field-group input:focus { border-color: rgba(0,245,255,0.5); }
+    .field-section-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: rgba(168,85,247,0.8);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin: 20px 0 10px;
+    }
+    .mood-inputs {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+    .mood-inputs .field-group { margin-bottom: 0; }
+    .mood-inputs input { text-align: center; font-size: 1.2rem; padding: 8px 4px; }
+
+    /* ── Modal action buttons ── */
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .btn-save {
+      flex: 1;
+      background: linear-gradient(135deg, rgba(0,245,255,0.2), rgba(168,85,247,0.2));
+      border: 1px solid rgba(0,245,255,0.4);
+      border-radius: 10px;
+      color: #e6edf3;
+      padding: 11px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-save:hover { background: linear-gradient(135deg, rgba(0,245,255,0.3), rgba(168,85,247,0.3)); }
+    .btn-reset {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: rgba(255,255,255,0.6);
+      padding: 11px 18px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-reset:hover { background: rgba(255,100,100,0.1); border-color: rgba(255,100,100,0.3); color: #fff; }
+
+    /* ── Toast notification ── */
+    .toast {
+      position: fixed;
+      bottom: 88px;
+      right: 24px;
+      z-index: 300;
+      background: rgba(0,245,255,0.15);
+      border: 1px solid rgba(0,245,255,0.4);
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.88rem;
+      color: #e6edf3;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -374,10 +556,66 @@
 
   </div><!-- /grid -->
 
-  <footer>🧠 AI-Powered Life OS — Track. Optimize. Evolve.</footer>
+  <footer id="footer-text">🧠 AI-Powered Life OS — Track. Optimize. Evolve.</footer>
+
+  <!-- Settings button -->
+  <button class="settings-btn" id="settings-btn" title="Settings">⚙️</button>
+
+  <!-- Settings modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
+      <button class="modal-close" id="modal-close" title="Close">✕</button>
+      <h2>⚙️ Widget Settings</h2>
+
+      <div class="field-group">
+        <label for="cfg-health">Health Score (%)</label>
+        <input id="cfg-health" type="number" min="0" max="100" placeholder="82" />
+      </div>
+      <div class="field-group">
+        <label for="cfg-goals">Goals Completed (%)</label>
+        <input id="cfg-goals" type="number" min="0" max="100" placeholder="67" />
+      </div>
+      <div class="field-group">
+        <label for="cfg-streak">Current Streak (days)</label>
+        <input id="cfg-streak" type="number" min="0" placeholder="45" />
+      </div>
+      <div class="field-group">
+        <label for="cfg-savings">Savings Goal (%)</label>
+        <input id="cfg-savings" type="number" min="0" max="100" placeholder="75" />
+      </div>
+      <div class="field-group">
+        <label for="cfg-learning">Learning Progress (%)</label>
+        <input id="cfg-learning" type="number" min="0" max="100" placeholder="65" />
+      </div>
+
+      <div class="field-section-title">Weekly Mood (Mon → Sun)</div>
+      <div class="mood-inputs">
+        <div class="field-group"><label>Mon</label><input id="cfg-mood-0" type="text" maxlength="2" placeholder="😊" /></div>
+        <div class="field-group"><label>Tue</label><input id="cfg-mood-1" type="text" maxlength="2" placeholder="😐" /></div>
+        <div class="field-group"><label>Wed</label><input id="cfg-mood-2" type="text" maxlength="2" placeholder="😊" /></div>
+        <div class="field-group"><label>Thu</label><input id="cfg-mood-3" type="text" maxlength="2" placeholder="😁" /></div>
+        <div class="field-group"><label>Fri</label><input id="cfg-mood-4" type="text" maxlength="2" placeholder="😊" /></div>
+        <div class="field-group"><label>Sat</label><input id="cfg-mood-5" type="text" maxlength="2" placeholder="😴" /></div>
+        <div class="field-group"><label>Sun</label><input id="cfg-mood-6" type="text" maxlength="2" placeholder="😊" /></div>
+      </div>
+
+      <div class="field-group" style="margin-top:16px">
+        <label for="cfg-footer">Footer Text</label>
+        <input id="cfg-footer" type="text" placeholder="🧠 AI-Powered Life OS — Track. Optimize. Evolve." />
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-save" id="btn-save">💾 Save</button>
+        <button class="btn-reset" id="btn-reset-defaults">🔄 Reset to Default</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
   <script>
-    /* Animate SVG rings after a short delay */
+    /* Animate SVG rings */
     function animateRing(id, pct) {
       const el = document.getElementById(id);
       if (!el) return;
@@ -387,17 +625,141 @@
     }
 
     /* Animate horizontal bars */
-    function animateBar(id) {
+    function animateBar(id, pct) {
       const el = document.getElementById(id);
       if (!el) return;
-      const pct = parseFloat(el.dataset.pct);
+      el.dataset.pct = pct;
       setTimeout(() => { el.style.width = pct + '%'; }, 200);
     }
 
-    animateRing('ring-health', 82);
-    animateRing('ring-learn',  65);
-    animateBar('bar-goals');
-    animateBar('bar-savings');
+    /* ───────────── Settings / localStorage ───────────── */
+    const DEFAULTS = {
+      health:   82,
+      goals:    67,
+      streak:   45,
+      savings:  75,
+      learning: 65,
+      mood0: '😊', mood1: '😐', mood2: '😊', mood3: '😁',
+      mood4: '😊', mood5: '😴', mood6: '😊',
+      footer: '🧠 AI-Powered Life OS — Track. Optimize. Evolve.',
+    };
+
+    function loadSettings() {
+      const s = {};
+      for (const [k, def] of Object.entries(DEFAULTS)) {
+        const stored = localStorage.getItem('lifeos_p_' + k);
+        s[k] = stored !== null ? (typeof def === 'number' ? Number(stored) : stored) : def;
+      }
+      return s;
+    }
+
+    function applySettings(s) {
+      /* Rings */
+      animateRing('ring-health', s.health);
+      animateRing('ring-learn',  s.learning);
+
+      /* Ring labels */
+      const healthSvg = document.getElementById('ring-health')?.closest('svg');
+      if (healthSvg) healthSvg.querySelector('.ring-label').textContent = s.health + '%';
+      const learnSvg = document.getElementById('ring-learn')?.closest('svg');
+      if (learnSvg) learnSvg.querySelector('.ring-label').textContent = s.learning + '%';
+
+      /* Bars */
+      animateBar('bar-goals',   s.goals);
+      animateBar('bar-savings', s.savings);
+
+      /* Bar labels */
+      const barGoalsCard = document.getElementById('bar-goals')?.closest('.card');
+      if (barGoalsCard) barGoalsCard.querySelector('.bar-main-val').textContent = s.goals + '%';
+      const barSavingsCard = document.getElementById('bar-savings')?.closest('.card');
+      if (barSavingsCard) barSavingsCard.querySelector('.bar-main-val').textContent = s.savings + '%';
+
+      /* Streak */
+      const streakVal = document.querySelector('.streak-val');
+      if (streakVal) {
+        const flame = streakVal.querySelector('.flame');
+        streakVal.innerHTML = '';
+        if (flame) streakVal.appendChild(flame);
+        streakVal.appendChild(document.createTextNode(s.streak));
+      }
+
+      /* Mood */
+      const moodEmojis = document.querySelectorAll('.mood-emoji');
+      ['mood0','mood1','mood2','mood3','mood4','mood5','mood6'].forEach((k, i) => {
+        if (moodEmojis[i]) moodEmojis[i].textContent = s[k];
+      });
+
+      /* Footer */
+      document.getElementById('footer-text').textContent = s.footer;
+    }
+
+    function populateForm(s) {
+      document.getElementById('cfg-health').value   = s.health;
+      document.getElementById('cfg-goals').value    = s.goals;
+      document.getElementById('cfg-streak').value   = s.streak;
+      document.getElementById('cfg-savings').value  = s.savings;
+      document.getElementById('cfg-learning').value = s.learning;
+      ['mood0','mood1','mood2','mood3','mood4','mood5','mood6'].forEach((k, i) => {
+        document.getElementById('cfg-mood-' + i).value = s[k];
+      });
+      document.getElementById('cfg-footer').value   = s.footer;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    /* ── Modal open/close ── */
+    const overlay = document.getElementById('modal-overlay');
+    document.getElementById('settings-btn').addEventListener('click', () => {
+      populateForm(loadSettings());
+      overlay.classList.add('open');
+    });
+    function closeModal() { overlay.classList.remove('open'); }
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    /* ── Save ── */
+    document.getElementById('btn-save').addEventListener('click', () => {
+      function parsePct(val, def) {
+        const n = parseInt(val, 10);
+        return isNaN(n) ? def : Math.min(100, Math.max(0, n));
+      }
+      function parsePos(val, def) {
+        const n = parseInt(val, 10);
+        return isNaN(n) ? def : Math.max(0, n);
+      }
+      const s = {
+        health:   parsePct(document.getElementById('cfg-health').value,   DEFAULTS.health),
+        goals:    parsePct(document.getElementById('cfg-goals').value,    DEFAULTS.goals),
+        streak:   parsePos(document.getElementById('cfg-streak').value,   DEFAULTS.streak),
+        savings:  parsePct(document.getElementById('cfg-savings').value,  DEFAULTS.savings),
+        learning: parsePct(document.getElementById('cfg-learning').value, DEFAULTS.learning),
+        footer:   document.getElementById('cfg-footer').value.trim() || DEFAULTS.footer,
+      };
+      ['mood0','mood1','mood2','mood3','mood4','mood5','mood6'].forEach((k, i) => {
+        s[k] = document.getElementById('cfg-mood-' + i).value.trim() || DEFAULTS[k];
+      });
+      for (const [k, v] of Object.entries(s)) localStorage.setItem('lifeos_p_' + k, v);
+      applySettings(s);
+      closeModal();
+      showToast('✅ Saved!');
+    });
+
+    /* ── Reset to defaults ── */
+    document.getElementById('btn-reset-defaults').addEventListener('click', () => {
+      for (const k of Object.keys(DEFAULTS)) localStorage.removeItem('lifeos_p_' + k);
+      applySettings(DEFAULTS);
+      closeModal();
+      showToast('🔄 Reset to defaults');
+    });
+
+    /* ── Init on page load ── */
+    applySettings(loadSettings());
   </script>
 </body>
 </html>
