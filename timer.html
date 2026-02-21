@@ -195,6 +195,220 @@
       letter-spacing: 0.5px;
       min-height: 1.2em;
     }
+
+    /* ── Settings button ── */
+    .settings-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      width: 52px;
+      height: 52px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s, border-color 0.3s, transform 0.3s;
+      color: #fff;
+    }
+    .settings-btn:hover {
+      background: rgba(0,245,255,0.15);
+      border-color: rgba(0,245,255,0.5);
+      transform: rotate(60deg);
+    }
+
+    /* ── Modal overlay ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── Modal card ── */
+    .modal {
+      background: #1a1a2e;
+      border: 1px solid rgba(0,245,255,0.25);
+      border-radius: 20px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      transform: translateY(30px);
+      transition: transform 0.3s;
+      box-shadow: 0 0 40px rgba(0,245,255,0.12), 0 0 80px rgba(168,85,247,0.08);
+    }
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+    .modal h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      background: linear-gradient(90deg, #00f5ff, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: rgba(255,100,100,0.2); color: #fff; }
+
+    /* ── Form fields ── */
+    .field-group {
+      margin-bottom: 16px;
+    }
+    .field-group label {
+      display: block;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .field-group input[type="number"],
+    .field-group input[type="text"] {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #e6edf3;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field-group input:focus { border-color: rgba(0,245,255,0.5); }
+    .field-hint {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.35);
+      margin-top: 4px;
+    }
+
+    /* ── Toggle switch ── */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .toggle-row label {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: rgba(255,255,255,0.12);
+      border-radius: 34px;
+      transition: 0.3s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    .toggle input:checked + .toggle-slider { background: rgba(0,245,255,0.5); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+    /* ── Modal action buttons ── */
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .btn-save {
+      flex: 1;
+      background: linear-gradient(135deg, rgba(0,245,255,0.2), rgba(168,85,247,0.2));
+      border: 1px solid rgba(0,245,255,0.4);
+      border-radius: 10px;
+      color: #e6edf3;
+      padding: 11px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-save:hover { background: linear-gradient(135deg, rgba(0,245,255,0.3), rgba(168,85,247,0.3)); }
+    .btn-reset {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: rgba(255,255,255,0.6);
+      padding: 11px 18px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-reset:hover { background: rgba(255,100,100,0.1); border-color: rgba(255,100,100,0.3); color: #fff; }
+
+    /* ── Toast notification ── */
+    .toast {
+      position: fixed;
+      bottom: 88px;
+      right: 24px;
+      z-index: 300;
+      background: rgba(0,245,255,0.15);
+      border: 1px solid rgba(0,245,255,0.4);
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.88rem;
+      color: #e6edf3;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -254,15 +468,100 @@
   <!-- Confetti canvas -->
   <canvas id="confetti-canvas"></canvas>
 
+  <!-- Settings button -->
+  <button class="settings-btn" id="settings-btn" title="Settings">⚙️</button>
+
+  <!-- Settings modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Settings">
+      <button class="modal-close" id="modal-close" title="Close">✕</button>
+      <h2>⚙️ Timer Settings</h2>
+
+      <div class="field-group">
+        <label for="cfg-focus">Focus Duration (minutes)</label>
+        <input id="cfg-focus" type="number" min="1" max="120" placeholder="25" />
+      </div>
+      <div class="field-group">
+        <label for="cfg-break">Break Duration (minutes)</label>
+        <input id="cfg-break" type="number" min="1" max="120" placeholder="5" />
+      </div>
+      <div class="field-group">
+        <label for="cfg-longbreak">Long Break Duration (minutes)</label>
+        <input id="cfg-longbreak" type="number" min="1" max="120" placeholder="15" />
+      </div>
+      <div class="field-group">
+        <label for="cfg-deep">Deep Work Duration (minutes)</label>
+        <input id="cfg-deep" type="number" min="1" max="120" placeholder="50" />
+      </div>
+      <div class="field-group">
+        <label for="cfg-sessions">Sessions Before Long Break</label>
+        <input id="cfg-sessions" type="number" min="1" max="10" placeholder="4" />
+        <div class="field-hint">Controls the number of session dots shown (1–10)</div>
+      </div>
+
+      <div class="toggle-row">
+        <label for="cfg-sound">Sound On/Off</label>
+        <label class="toggle">
+          <input id="cfg-sound" type="checkbox" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-save" id="btn-save">💾 Save</button>
+        <button class="btn-reset" id="btn-reset-defaults">🔄 Reset to Default</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
   <script>
+    /* ─────────────── Settings / localStorage ─────────────── */
+    const TIMER_DEFAULTS = {
+      focus:      25,
+      shortBreak: 5,
+      longBreak:  15,
+      deep:       50,
+      sessions:   4,
+      sound:      true,
+    };
+
+    function loadTimerSettings() {
+      const s = {};
+      for (const [k, def] of Object.entries(TIMER_DEFAULTS)) {
+        const stored = localStorage.getItem('lifeos_t_' + k);
+        if (stored === null) {
+          s[k] = def;
+        } else if (typeof def === 'boolean') {
+          s[k] = stored === 'true';
+        } else {
+          s[k] = Number(stored);
+        }
+      }
+      return s;
+    }
+
+    function buildTimerModes(s) {
+      return [
+        { minutes: s.focus,      label: 'Focus',      btn: '🎯 Focus (' + s.focus + 'm)' },
+        { minutes: s.shortBreak, label: 'Break',       btn: '☕ Break (' + s.shortBreak + 'm)' },
+        { minutes: s.longBreak,  label: 'Long Break',  btn: '🌿 Long Break (' + s.longBreak + 'm)' },
+        { minutes: s.deep,       label: 'Deep',        btn: '🧠 Deep (' + s.deep + 'm)' },
+      ];
+    }
+
     /* ─────────────── State ─────────────── */
     const CIRC = 691.15; // 2 * π * 110
-    let totalSeconds  = 25 * 60;
+    let settings      = loadTimerSettings();
+    let totalSeconds  = settings.focus * 60;
     let remaining     = totalSeconds;
     let running       = false;
     let intervalId    = null;
     let sessionsDone  = 0;
     let currentLabel  = 'Focus';
+    let maxSessions   = settings.sessions;
 
     const displayEl   = document.getElementById('timer-display');
     const labelEl     = document.getElementById('timer-mode-label');
@@ -271,22 +570,44 @@
     const startBtn    = document.getElementById('btn-start');
     const resetBtn    = document.getElementById('btn-reset');
 
+    /* ─────────────── Session dots ─────────────── */
+    function rebuildSessionDots(count) {
+      const container = document.getElementById('sessions');
+      container.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'session-dot' + (i < sessionsDone ? ' done' : '');
+        dot.id = 'dot-' + i;
+        container.appendChild(dot);
+      }
+    }
+
     /* ─────────────── Mode buttons ─────────────── */
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (running) stopTimer();
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        totalSeconds  = parseInt(btn.dataset.minutes, 10) * 60;
-        currentLabel  = btn.dataset.label;
-        remaining     = totalSeconds;
-        labelEl.textContent = currentLabel;
-        updateDisplay();
-        updateRing();
-        statusEl.textContent = 'Ready — press Start';
-        startBtn.textContent = '▶ Start';
+    function rebuildModeButtons(modes) {
+      const container = document.querySelector('.modes');
+      container.innerHTML = '';
+      modes.forEach((mode, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'mode-btn' + (idx === 0 ? ' active' : '');
+        btn.dataset.minutes = mode.minutes;
+        btn.dataset.label   = mode.label;
+        btn.textContent     = mode.btn;
+        btn.addEventListener('click', () => {
+          if (running) stopTimer();
+          container.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          totalSeconds  = parseInt(btn.dataset.minutes, 10) * 60;
+          currentLabel  = btn.dataset.label;
+          remaining     = totalSeconds;
+          labelEl.textContent = currentLabel;
+          updateDisplay();
+          updateRing();
+          statusEl.textContent = 'Ready — press Start';
+          startBtn.textContent = '▶ Start';
+        });
+        container.appendChild(btn);
       });
-    });
+    }
 
     /* ─────────────── Timer logic ─────────────── */
     function updateDisplay() {
@@ -341,10 +662,12 @@
 
     /* ─────────────── Session complete ─────────────── */
     function onComplete() {
-      playBeep();
+      const s = loadTimerSettings();
+      if (s.sound) playBeep();
       launchConfetti();
-      if (sessionsDone < 4) {
-        document.getElementById('dot-' + sessionsDone).classList.add('done');
+      const dot = document.getElementById('dot-' + sessionsDone);
+      if (dot) {
+        dot.classList.add('done');
         sessionsDone++;
       }
       statusEl.textContent = '🎉 Session complete!';
@@ -417,9 +740,83 @@
       frame = requestAnimationFrame(draw);
     }
 
+    /* ─────────────── Settings UI ─────────────── */
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    function populateTimerForm(s) {
+      document.getElementById('cfg-focus').value     = s.focus;
+      document.getElementById('cfg-break').value     = s.shortBreak;
+      document.getElementById('cfg-longbreak').value = s.longBreak;
+      document.getElementById('cfg-deep').value      = s.deep;
+      document.getElementById('cfg-sessions').value  = s.sessions;
+      document.getElementById('cfg-sound').checked   = s.sound;
+    }
+
+    function applyTimerSettings(s) {
+      maxSessions = s.sessions;
+      const modes = buildTimerModes(s);
+      rebuildModeButtons(modes);
+      rebuildSessionDots(s.sessions);
+      /* Reset timer to first mode (Focus) */
+      if (running) stopTimer();
+      totalSeconds = s.focus * 60;
+      remaining    = totalSeconds;
+      currentLabel = 'Focus';
+      labelEl.textContent = currentLabel;
+      updateDisplay();
+      updateRing();
+      statusEl.textContent = 'Settings applied — press Start';
+      startBtn.textContent = '▶ Start';
+    }
+
+    const overlay = document.getElementById('modal-overlay');
+    document.getElementById('settings-btn').addEventListener('click', () => {
+      populateTimerForm(loadTimerSettings());
+      overlay.classList.add('open');
+    });
+    function closeModal() { overlay.classList.remove('open'); }
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    document.getElementById('btn-save').addEventListener('click', () => {
+      function parseDur(val, def) {
+        const n = parseInt(val, 10);
+        return isNaN(n) ? def : Math.min(120, Math.max(1, n));
+      }
+      function parseSessions(val, def) {
+        const n = parseInt(val, 10);
+        return isNaN(n) ? def : Math.min(10, Math.max(1, n));
+      }
+      const s = {
+        focus:      parseDur(document.getElementById('cfg-focus').value,          TIMER_DEFAULTS.focus),
+        shortBreak: parseDur(document.getElementById('cfg-break').value,          TIMER_DEFAULTS.shortBreak),
+        longBreak:  parseDur(document.getElementById('cfg-longbreak').value,      TIMER_DEFAULTS.longBreak),
+        deep:       parseDur(document.getElementById('cfg-deep').value,           TIMER_DEFAULTS.deep),
+        sessions:   parseSessions(document.getElementById('cfg-sessions').value,  TIMER_DEFAULTS.sessions),
+        sound:      document.getElementById('cfg-sound').checked,
+      };
+      for (const [k, v] of Object.entries(s)) localStorage.setItem('lifeos_t_' + k, v);
+      applyTimerSettings(s);
+      closeModal();
+      showToast('✅ Saved!');
+    });
+
+    document.getElementById('btn-reset-defaults').addEventListener('click', () => {
+      for (const k of Object.keys(TIMER_DEFAULTS)) localStorage.removeItem('lifeos_t_' + k);
+      sessionsDone = 0;
+      applyTimerSettings(TIMER_DEFAULTS);
+      closeModal();
+      showToast('🔄 Reset to defaults');
+    });
+
     /* ─────────────── Init ─────────────── */
-    updateDisplay();
-    updateRing();
+    applyTimerSettings(settings);
   </script>
 </body>
 </html>
