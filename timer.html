@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⏱ Pomodoro Timer — Life OS</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+      overflow-x: hidden;
+    }
+
+    /* ── Header ── */
+    h1 {
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-weight: 800;
+      background: linear-gradient(90deg, #00f5ff, #a855f7, #ff1cf7, #00f5ff);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 4s linear infinite;
+      margin-bottom: 8px;
+    }
+    @keyframes gradient-shift {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+    .subtitle {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 32px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+    .nav a {
+      text-decoration: none;
+      color: rgba(255,255,255,0.65);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50px;
+      padding: 8px 20px;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+    .nav a:hover {
+      background: rgba(0,245,255,0.1);
+      border-color: rgba(0,245,255,0.4);
+      color: #00f5ff;
+    }
+
+    /* ── Mode buttons ── */
+    .modes {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    .mode-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6);
+      border-radius: 50px;
+      padding: 9px 22px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .mode-btn:hover { background: rgba(0,245,255,0.1); }
+    .mode-btn.active {
+      background: rgba(0,245,255,0.15);
+      border-color: #00f5ff;
+      color: #00f5ff;
+      font-weight: 600;
+    }
+
+    /* ── Circular timer SVG ── */
+    .timer-wrap {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      margin-bottom: 36px;
+    }
+    .timer-svg {
+      transform: rotate(-90deg);
+      overflow: visible;
+    }
+    .timer-bg {
+      fill: none;
+      stroke: rgba(255,255,255,0.07);
+      stroke-width: 12;
+    }
+    .timer-ring {
+      fill: none;
+      stroke: url(#timerGrad);
+      stroke-width: 12;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.9s linear;
+    }
+    .timer-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .timer-display {
+      font-size: 3.6rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #e6edf3;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-mode-label {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 4px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── Control buttons ── */
+    .controls {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+    .ctrl-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #e6edf3;
+      border-radius: 50px;
+      padding: 12px 30px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .ctrl-btn:hover { background: rgba(0,245,255,0.12); border-color: rgba(0,245,255,0.4); }
+    .ctrl-btn.primary {
+      background: linear-gradient(135deg, rgba(0,245,255,0.2), rgba(168,85,247,0.2));
+      border-color: rgba(0,245,255,0.4);
+    }
+
+    /* ── Session dots ── */
+    .sessions {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .session-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.15);
+      transition: all 0.4s;
+    }
+    .session-dot.done {
+      background: #00f5ff;
+      border-color: #00f5ff;
+      box-shadow: 0 0 12px rgba(0,245,255,0.7);
+    }
+
+    /* ── Confetti canvas (full screen overlay) ── */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ── Status message ── */
+    .status-msg {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.5px;
+      min-height: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>⏱ Pomodoro Timer</h1>
+  <p class="subtitle">Focus · Rest · Repeat</p>
+
+  <nav class="nav">
+    <a href="index.html">🏠 Home</a>
+    <a href="progress.html">📊 Progress</a>
+  </nav>
+
+  <!-- Mode selector -->
+  <div class="modes">
+    <button class="mode-btn active" data-minutes="25" data-label="Focus">🎯 Focus (25m)</button>
+    <button class="mode-btn"        data-minutes="5"  data-label="Break">☕ Break (5m)</button>
+    <button class="mode-btn"        data-minutes="15" data-label="Long Break">🌿 Long Break (15m)</button>
+    <button class="mode-btn"        data-minutes="50" data-label="Deep">🧠 Deep (50m)</button>
+  </div>
+
+  <!-- Circular timer -->
+  <div class="timer-wrap">
+    <svg class="timer-svg" width="260" height="260" viewBox="0 0 260 260">
+      <defs>
+        <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#00f5ff"/>
+          <stop offset="50%"  stop-color="#a855f7"/>
+          <stop offset="100%" stop-color="#ff1cf7"/>
+        </linearGradient>
+      </defs>
+      <circle class="timer-bg"   cx="130" cy="130" r="110"/>
+      <circle class="timer-ring" cx="130" cy="130" r="110" id="timer-ring"
+        stroke-dasharray="691.15"
+        stroke-dashoffset="0"/>
+    </svg>
+    <div class="timer-center">
+      <div class="timer-display" id="timer-display">25:00</div>
+      <div class="timer-mode-label" id="timer-mode-label">Focus</div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="ctrl-btn primary" id="btn-start">▶ Start</button>
+    <button class="ctrl-btn" id="btn-reset">↺ Reset</button>
+  </div>
+
+  <!-- Session dots -->
+  <div class="sessions" id="sessions">
+    <div class="session-dot" id="dot-0"></div>
+    <div class="session-dot" id="dot-1"></div>
+    <div class="session-dot" id="dot-2"></div>
+    <div class="session-dot" id="dot-3"></div>
+  </div>
+
+  <p class="status-msg" id="status-msg">Select a mode and press Start</p>
+
+  <!-- Confetti canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script>
+    /* ─────────────── State ─────────────── */
+    const CIRC = 691.15; // 2 * π * 110
+    let totalSeconds  = 25 * 60;
+    let remaining     = totalSeconds;
+    let running       = false;
+    let intervalId    = null;
+    let sessionsDone  = 0;
+    let currentLabel  = 'Focus';
+
+    const displayEl   = document.getElementById('timer-display');
+    const labelEl     = document.getElementById('timer-mode-label');
+    const ringEl      = document.getElementById('timer-ring');
+    const statusEl    = document.getElementById('status-msg');
+    const startBtn    = document.getElementById('btn-start');
+    const resetBtn    = document.getElementById('btn-reset');
+
+    /* ─────────────── Mode buttons ─────────────── */
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (running) stopTimer();
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        totalSeconds  = parseInt(btn.dataset.minutes, 10) * 60;
+        currentLabel  = btn.dataset.label;
+        remaining     = totalSeconds;
+        labelEl.textContent = currentLabel;
+        updateDisplay();
+        updateRing();
+        statusEl.textContent = 'Ready — press Start';
+        startBtn.textContent = '▶ Start';
+      });
+    });
+
+    /* ─────────────── Timer logic ─────────────── */
+    function updateDisplay() {
+      const m = String(Math.floor(remaining / 60)).padStart(2, '0');
+      const s = String(remaining % 60).padStart(2, '0');
+      displayEl.textContent = `${m}:${s}`;
+    }
+
+    function updateRing() {
+      const fraction = remaining / totalSeconds;
+      ringEl.style.strokeDashoffset = CIRC * (1 - fraction);
+    }
+
+    function startTimer() {
+      running = true;
+      startBtn.textContent = '⏸ Pause';
+      statusEl.textContent = `${currentLabel} session running…`;
+      intervalId = setInterval(() => {
+        if (remaining <= 0) {
+          clearInterval(intervalId);
+          running = false;
+          startBtn.textContent = '▶ Start';
+          onComplete();
+          return;
+        }
+        remaining--;
+        updateDisplay();
+        updateRing();
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(intervalId);
+      running = false;
+      startBtn.textContent = '▶ Start';
+      statusEl.textContent = 'Paused';
+    }
+
+    startBtn.addEventListener('click', () => {
+      if (running) stopTimer();
+      else startTimer();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      stopTimer();
+      remaining = totalSeconds;
+      updateDisplay();
+      updateRing();
+      statusEl.textContent = 'Reset — press Start';
+      startBtn.textContent = '▶ Start';
+    });
+
+    /* ─────────────── Session complete ─────────────── */
+    function onComplete() {
+      playBeep();
+      launchConfetti();
+      if (sessionsDone < 4) {
+        document.getElementById('dot-' + sessionsDone).classList.add('done');
+        sessionsDone++;
+      }
+      statusEl.textContent = '🎉 Session complete!';
+    }
+
+    /* ─────────────── Web Audio beep ─────────────── */
+    function playBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.5, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.65);
+      } catch (_) { /* AudioContext not available */ }
+    }
+
+    /* ─────────────── Confetti ─────────────── */
+    function launchConfetti() {
+      const canvas  = document.getElementById('confetti-canvas');
+      const ctx     = canvas.getContext('2d');
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const COLORS = ['#00f5ff','#a855f7','#ff1cf7','#fbbf24','#34d399','#f87171'];
+      const pieces = Array.from({ length: 120 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * -canvas.height,
+        w: Math.random() * 10 + 5,
+        h: Math.random() * 5  + 3,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        speed: Math.random() * 4 + 2,
+        angle: Math.random() * Math.PI * 2,
+        spin:  (Math.random() - 0.5) * 0.15,
+        drift: (Math.random() - 0.5) * 2,
+      }));
+
+      let frame;
+      let elapsed = 0;
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        for (const p of pieces) {
+          p.y     += p.speed;
+          p.x     += p.drift;
+          p.angle += p.spin;
+          if (p.y < canvas.height + 20) active = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        }
+        elapsed++;
+        if (active && elapsed < 260) {
+          frame = requestAnimationFrame(draw);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(frame);
+        }
+      }
+      frame = requestAnimationFrame(draw);
+    }
+
+    /* ─────────────── Init ─────────────── */
+    updateDisplay();
+    updateRing();
+  </script>
+</body>
+</html>

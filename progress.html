@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📊 Progress Dashboard — Life OS</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    header h1 {
+      font-size: clamp(1.6rem, 5vw, 2.8rem);
+      font-weight: 800;
+      background: linear-gradient(90deg, #00f5ff, #a855f7, #ff1cf7, #00f5ff);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 4s linear infinite;
+    }
+    header p {
+      margin-top: 8px;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+    @keyframes gradient-shift {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    /* ── Nav ── */
+    .nav {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+    .nav a {
+      text-decoration: none;
+      color: rgba(255,255,255,0.65);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50px;
+      padding: 8px 20px;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+    .nav a:hover {
+      background: rgba(0,245,255,0.1);
+      border-color: rgba(0,245,255,0.4);
+      color: #00f5ff;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── Card base ── */
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      cursor: default;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        110deg,
+        transparent 30%,
+        rgba(255,255,255,0.06) 50%,
+        transparent 70%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 2.8s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .card:hover {
+      transform: translateY(-6px) scale(1.015);
+      box-shadow: 0 8px 40px var(--card-glow, rgba(0,245,255,0.25));
+      border-color: var(--card-border, rgba(0,245,255,0.4));
+    }
+    .card:nth-child(1) { --card-glow: rgba(0,245,255,0.25);   --card-border: rgba(0,245,255,0.4); }
+    .card:nth-child(2) { --card-glow: rgba(168,85,247,0.25);  --card-border: rgba(168,85,247,0.4); }
+    .card:nth-child(3) { --card-glow: rgba(255,100,30,0.25);  --card-border: rgba(255,100,30,0.4); }
+    .card:nth-child(4) { --card-glow: rgba(34,197,94,0.25);   --card-border: rgba(34,197,94,0.4); }
+    .card:nth-child(5) { --card-glow: rgba(255,28,247,0.25);  --card-border: rgba(255,28,247,0.4); }
+    .card:nth-child(6) { --card-glow: rgba(250,204,21,0.25);  --card-border: rgba(250,204,21,0.4); }
+
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 20px;
+    }
+
+    /* ── Circular SVG progress ring ── */
+    .ring-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .ring-svg {
+      transform: rotate(-90deg);
+      overflow: visible;
+    }
+    .ring-bg {
+      fill: none;
+      stroke: rgba(255,255,255,0.08);
+      stroke-width: 10;
+    }
+    .ring-fill {
+      fill: none;
+      stroke-width: 10;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .ring-label {
+      font-size: 1.6rem;
+      font-weight: 700;
+      fill: #e6edf3;
+      dominant-baseline: middle;
+      text-anchor: middle;
+    }
+    .ring-sub {
+      font-size: 0.75rem;
+      fill: rgba(255,255,255,0.45);
+      dominant-baseline: middle;
+      text-anchor: middle;
+    }
+
+    /* ── Horizontal bar ── */
+    .bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+    .bar-main-val {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #e6edf3;
+    }
+    .bar-pct {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.45);
+    }
+    .bar-track {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 50px;
+      width: 0;
+      transition: width 1.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    /* Glow on bar */
+    .bar-fill.cyan  { background: linear-gradient(90deg, #00b4d8, #00f5ff); box-shadow: 0 0 12px rgba(0,245,255,0.6); }
+    .bar-fill.green { background: linear-gradient(90deg, #22c55e, #4ade80); box-shadow: 0 0 12px rgba(34,197,94,0.6); }
+
+    /* ── Streak card ── */
+    .streak-val {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #e6edf3;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .flame {
+      display: inline-block;
+      animation: flame-pulse 0.9s ease-in-out infinite alternate;
+      transform-origin: bottom center;
+    }
+    @keyframes flame-pulse {
+      0%   { transform: scaleY(1) scaleX(1);   filter: drop-shadow(0 0 6px #ff6400); }
+      100% { transform: scaleY(1.15) scaleX(0.9); filter: drop-shadow(0 0 14px #ff9500); }
+    }
+    .streak-sub {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.45);
+      margin-top: 8px;
+    }
+
+    /* ── Mood card ── */
+    .mood-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .mood-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+    .mood-emoji {
+      font-size: 1.5rem;
+      animation: mood-float 3s ease-in-out infinite;
+    }
+    .mood-day:nth-child(1) .mood-emoji { animation-delay: 0.0s; }
+    .mood-day:nth-child(2) .mood-emoji { animation-delay: 0.3s; }
+    .mood-day:nth-child(3) .mood-emoji { animation-delay: 0.6s; }
+    .mood-day:nth-child(4) .mood-emoji { animation-delay: 0.9s; }
+    .mood-day:nth-child(5) .mood-emoji { animation-delay: 1.2s; }
+    .mood-day:nth-child(6) .mood-emoji { animation-delay: 1.5s; }
+    .mood-day:nth-child(7) .mood-emoji { animation-delay: 1.8s; }
+    @keyframes mood-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .mood-lbl {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      margin-top: 56px;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📊 Progress Dashboard</h1>
+    <p>Your life metrics at a glance</p>
+  </header>
+
+  <nav class="nav">
+    <a href="index.html">🏠 Home</a>
+    <a href="timer.html">⏱ Pomodoro Timer</a>
+  </nav>
+
+  <div class="grid">
+
+    <!-- 1. Health Score — circular ring -->
+    <div class="card">
+      <div class="card-title">Health Score</div>
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="140" height="140" viewBox="0 0 140 140">
+          <circle class="ring-bg"   cx="70" cy="70" r="56"/>
+          <circle class="ring-fill" cx="70" cy="70" r="56"
+            id="ring-health"
+            stroke="url(#gradHealth)"
+            stroke-dasharray="351.86"
+            stroke-dashoffset="351.86"/>
+          <defs>
+            <linearGradient id="gradHealth" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stop-color="#00f5ff"/>
+              <stop offset="100%" stop-color="#a855f7"/>
+            </linearGradient>
+          </defs>
+          <text class="ring-label" x="70" y="66" transform="rotate(90,70,70)">82%</text>
+          <text class="ring-sub"   x="70" y="82" transform="rotate(90,70,70)">Health</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 2. Goals Completed — horizontal bar -->
+    <div class="card">
+      <div class="card-title">Goals Completed</div>
+      <div class="bar-header">
+        <span class="bar-main-val">67%</span>
+        <span class="bar-pct">of targets hit</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill cyan" id="bar-goals" data-pct="67"></div>
+      </div>
+    </div>
+
+    <!-- 3. Current Streak -->
+    <div class="card">
+      <div class="card-title">Current Streak</div>
+      <div class="streak-val">
+        <span class="flame">🔥</span>45
+      </div>
+      <div class="streak-sub">days — keep it going!</div>
+    </div>
+
+    <!-- 4. Savings Goal — horizontal bar -->
+    <div class="card">
+      <div class="card-title">Savings Goal</div>
+      <div class="bar-header">
+        <span class="bar-main-val">75%</span>
+        <span class="bar-pct">funded</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill green" id="bar-savings" data-pct="75"></div>
+      </div>
+    </div>
+
+    <!-- 5. Learning Progress — circular ring -->
+    <div class="card">
+      <div class="card-title">Learning Progress</div>
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="140" height="140" viewBox="0 0 140 140">
+          <circle class="ring-bg"   cx="70" cy="70" r="56"/>
+          <circle class="ring-fill" cx="70" cy="70" r="56"
+            id="ring-learn"
+            stroke="url(#gradLearn)"
+            stroke-dasharray="351.86"
+            stroke-dashoffset="351.86"/>
+          <defs>
+            <linearGradient id="gradLearn" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stop-color="#ff1cf7"/>
+              <stop offset="100%" stop-color="#a855f7"/>
+            </linearGradient>
+          </defs>
+          <text class="ring-label" x="70" y="66" transform="rotate(90,70,70)">65%</text>
+          <text class="ring-sub"   x="70" y="82" transform="rotate(90,70,70)">Learning</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 6. Weekly Mood -->
+    <div class="card">
+      <div class="card-title">Weekly Mood</div>
+      <div class="mood-row">
+        <div class="mood-day"><span class="mood-emoji">😊</span><span class="mood-lbl">Mon</span></div>
+        <div class="mood-day"><span class="mood-emoji">😐</span><span class="mood-lbl">Tue</span></div>
+        <div class="mood-day"><span class="mood-emoji">😊</span><span class="mood-lbl">Wed</span></div>
+        <div class="mood-day"><span class="mood-emoji">😁</span><span class="mood-lbl">Thu</span></div>
+        <div class="mood-day"><span class="mood-emoji">😊</span><span class="mood-lbl">Fri</span></div>
+        <div class="mood-day"><span class="mood-emoji">😴</span><span class="mood-lbl">Sat</span></div>
+        <div class="mood-day"><span class="mood-emoji">😊</span><span class="mood-lbl">Sun</span></div>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+
+  <footer>🧠 AI-Powered Life OS — Track. Optimize. Evolve.</footer>
+
+  <script>
+    /* Animate SVG rings after a short delay */
+    function animateRing(id, pct) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const circumference = 351.86;
+      const offset = circumference * (1 - pct / 100);
+      setTimeout(() => { el.style.strokeDashoffset = offset; }, 200);
+    }
+
+    /* Animate horizontal bars */
+    function animateBar(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const pct = parseFloat(el.dataset.pct);
+      setTimeout(() => { el.style.width = pct + '%'; }, 200);
+    }
+
+    animateRing('ring-health', 82);
+    animateRing('ring-learn',  65);
+    animateBar('bar-goals');
+    animateBar('bar-savings');
+  </script>
+</body>
+</html>

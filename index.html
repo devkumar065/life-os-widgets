@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧠 AI-Powered Life OS</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0f;
+      color: #fff;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Three.js canvas ── */
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+    #canvas-container canvas { display: block; }
+
+    /* ── Pulse rings ── */
+    .pulse-rings {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 255, 255, 0.15);
+      animation: pulse-ring 3s ease-out infinite;
+    }
+    .ring:nth-child(1) { width: 200px; height: 200px; animation-delay: 0s; }
+    .ring:nth-child(2) { width: 360px; height: 360px; animation-delay: 0.8s; }
+    .ring:nth-child(3) { width: 520px; height: 520px; animation-delay: 1.6s; }
+    .ring:nth-child(4) { width: 680px; height: 680px; animation-delay: 2.4s; }
+    @keyframes pulse-ring {
+      0%   { transform: scale(0.6); opacity: 0.7; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+
+    /* ── Main content ── */
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px 40px;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    /* ── Title ── */
+    .title {
+      font-size: clamp(2rem, 6vw, 4.2rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      text-align: center;
+      background: linear-gradient(90deg, #00f5ff, #a855f7, #ff1cf7, #00f5ff);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 4s linear infinite;
+      filter: drop-shadow(0 0 24px rgba(168,85,247,0.5));
+      margin-bottom: 16px;
+    }
+    @keyframes gradient-shift {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    .subtitle {
+      font-size: clamp(0.9rem, 2.5vw, 1.15rem);
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      margin-bottom: 64px;
+      letter-spacing: 1px;
+    }
+
+    /* ── Stat cards ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      width: 100%;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 28px 24px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      cursor: default;
+    }
+    .card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 0 32px var(--glow);
+      border-color: var(--glow);
+    }
+    .card:nth-child(1) { --glow: rgba(0,245,255,0.4); }
+    .card:nth-child(2) { --glow: rgba(168,85,247,0.4); }
+    .card:nth-child(3) { --glow: rgba(255,28,247,0.4); }
+    .card:nth-child(4) { --glow: rgba(0,245,255,0.4); }
+
+    .card-icon { font-size: 2rem; margin-bottom: 10px; }
+
+    .card-value {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #00f5ff, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card-label {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      margin-top: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Nav links ── */
+    .nav {
+      margin-top: 48px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .nav a {
+      text-decoration: none;
+      color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+    .nav a:hover {
+      background: rgba(0,245,255,0.12);
+      border-color: rgba(0,245,255,0.5);
+      color: #00f5ff;
+    }
+
+    @media (max-width: 480px) {
+      .cards { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Three.js scene -->
+  <div id="canvas-container"></div>
+
+  <!-- Pulse rings -->
+  <div class="pulse-rings">
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <h1 class="title">🧠 AI-Powered Life OS</h1>
+    <p class="subtitle">Track · Optimize · Evolve — Your intelligent life dashboard</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <div class="card-value" data-target="12" id="stat-goals">0</div>
+        <div class="card-label">Active Goals</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔥</div>
+        <div class="card-value" data-target="45" id="stat-streak">0</div>
+        <div class="card-label">Day Streak</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⭐</div>
+        <div class="card-value" data-target="87" id="stat-score">0</div>
+        <div class="card-label">Life Score</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <div class="card-value" data-target="50" id="stat-ai">0</div>
+        <div class="card-label">AI Prompts</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="progress.html">📊 Progress Dashboard</a>
+      <a href="timer.html">⏱ Pomodoro Timer</a>
+    </nav>
+  </div>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    /* ───────────── Three.js Scene ───────────── */
+    (function () {
+      const container = document.getElementById('canvas-container');
+      const W = window.innerWidth, H = window.innerHeight;
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(W, H);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 1000);
+      camera.position.z = 5;
+
+      /* Wireframe icosahedra (brain-like cluster) */
+      const icoGeo = new THREE.IcosahedronGeometry(1, 1);
+      const configs = [
+        { scale: 1.4, color: 0x00f5ff, x: 0,    y: 0,    z: 0 },
+        { scale: 0.8, color: 0xa855f7, x: 2.2,  y: 0.8,  z: -1 },
+        { scale: 0.7, color: 0xff1cf7, x: -2.2, y: -0.6, z: -0.5 },
+        { scale: 0.6, color: 0x00f5ff, x: 1.2,  y: -1.5, z: 0.5 },
+        { scale: 0.5, color: 0xa855f7, x: -1.3, y: 1.4,  z: 0.3 },
+      ];
+
+      const meshes = configs.map(c => {
+        const mat = new THREE.MeshBasicMaterial({ color: c.color, wireframe: true });
+        const mesh = new THREE.Mesh(icoGeo, mat);
+        mesh.scale.setScalar(c.scale);
+        mesh.position.set(c.x, c.y, c.z);
+        scene.add(mesh);
+        return mesh;
+      });
+
+      /* Particle system */
+      const particleCount = 300;
+      const positions = new Float32Array(particleCount * 3);
+      for (let i = 0; i < particleCount; i++) {
+        positions[i * 3]     = (Math.random() - 0.5) * 20;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+      }
+      const pGeo = new THREE.BufferGeometry();
+      pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      const pMat = new THREE.PointsMaterial({ color: 0x334155, size: 0.06 });
+      scene.add(new THREE.Points(pGeo, pMat));
+
+      /* Mouse tracking */
+      let mx = 0, my = 0;
+      document.addEventListener('mousemove', e => {
+        mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+        my = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+
+      /* Animation loop */
+      let t = 0;
+      function animate() {
+        requestAnimationFrame(animate);
+        t += 0.005;
+        meshes.forEach((m, i) => {
+          m.rotation.x += 0.003 + i * 0.001;
+          m.rotation.y += 0.005 + i * 0.001;
+        });
+        camera.position.x += (mx * 1.5 - camera.position.x) * 0.04;
+        camera.position.y += (-my * 1.0 - camera.position.y) * 0.04;
+        camera.lookAt(scene.position);
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      /* Resize */
+      window.addEventListener('resize', () => {
+        const w = window.innerWidth, h = window.innerHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+    })();
+
+    /* ───────────── Animated Counters ───────────── */
+    document.querySelectorAll('.card-value[data-target]').forEach(el => {
+      const target = parseInt(el.dataset.target, 10);
+      const duration = 1400;
+      const start = performance.now();
+      function step(now) {
+        const elapsed = Math.min(now - start, duration);
+        const progress = elapsed / duration;
+        const ease = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(ease * target);
+        if (elapsed < duration) requestAnimationFrame(step);
+        else el.textContent = target;
+      }
+      // Slight stagger per card
+      const delay = Array.from(document.querySelectorAll('.card-value[data-target]')).indexOf(el) * 150;
+      setTimeout(() => requestAnimationFrame(step), delay);
+    });
+  </script>
+</body>
+</html>
